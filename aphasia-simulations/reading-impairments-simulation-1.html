@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aphasia Corner: Reading Impairment Phonological</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b6f91',
+                        secondary: '#f57c00',
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+        <h1 class="text-3xl font-bold text-center text-gray-900 mb-8">Aphasia Exercises</h1>
+
+        <nav class="mb-8">
+            <ul class="flex justify-center space-x-4">
+                <li><a href="../index.html" class="text-blue-600 hover:text-blue-800">Introduction</a></li>
+                <li><a href="listening-impairments.html" class="text-blue-600 hover:text-blue-800">Listening</a></li>
+                <li><a href="reading-impairments.html" class="text-blue-600 hover:text-blue-800 font-bold">Reading</a></li>
+                <li><a href="writing-impairments.html" class="text-blue-600 hover:text-blue-800">Writing</a></li>
+                <li><a href="speaking-impairments.html" class="text-blue-600 hover:text-blue-800">Speaking</a></li>
+            </ul>
+        </nav>
+
+        <nav class="mb-12">
+            <ul class="flex justify-center space-x-4">
+                <li><a href="reading-impairments.html" class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300">Overview</a></li>
+                <li><a href="reading-impairments-simulation-1.html" class="px-3 py-2 bg-blue-600 rounded-full text-white">Exercise 1</a></li>
+                <li><a href="reading-impairments-simulation-2.html" class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300">Exercise 2</a></li>
+                <li><a href="reading-impairments-simulation-3.html" class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300">Exercise 3</a></li>
+                <li><a href="reading-impairments-communication-tips.html" class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300">Communication Tips</a></li>
+            </ul>
+        </nav>
+
+        <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold text-center text-gray-900 mb-6">Simulating Phonological and Semantic Errors</h2>
+            <p class="text-center text-gray-600 mb-8">Read the instruction and click on the picture that corresponds to the instruction.</p>
+
+            <div id="task" class="mb-8">
+                <p class="text-xl font-medium text-center">Click on... <span id="questionText" class="text-primary font-bold"></span></p>
+            </div>
+
+            <div id="images" class="grid grid-cols-2 gap-8 mb-8">
+                <div class="image-container">
+                    <img id="img1" src="" alt="Option 1" class="w-full h-48 object-cover rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+                    <div id="confirmation1" class="mt-2 text-center font-semibold"></div>
+                </div>
+                <div class="image-container">
+                    <img id="img2" src="" alt="Option 2" class="w-full h-48 object-cover rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+                    <div id="confirmation2" class="mt-2 text-center font-semibold"></div>
+                </div>
+            </div>
+
+            <div id="description" class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md mb-8 hidden"></div>
+
+            <div class="flex justify-between items-center mb-4">
+                <button id="nextButton" class="bg-secondary text-white px-6 py-2 rounded-full hover:bg-orange-600 transition-colors duration-300 flex items-center">
+                    Next Question
+                    <i data-lucide="chevron-right" class="ml-2"></i>
+                </button>
+                <span class="text-gray-600">
+                    Question <span id="currentQuestion" class="font-semibold">1</span> of <span id="totalQuestions" class="font-semibold"></span>
+                </span>
+            </div>
+
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div id="progressBar" class="bg-primary h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <footer class="text-center mt-8">
+            <p class="text-gray-600 text-sm">
+                &copy; <span id="currentYear"></span> Aphasia Corner. All rights reserved.<br>
+                Developed by <code class="bg-gray-200 px-1 py-0.5 rounded">Aristocratjnr</code>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const questionsData = {
+            questions: [
+                {
+                    text: "ne$e",
+                    correct_image_url: "../static/assets/images/nose.jpg",
+                    wrong_image_url: "../static/assets/images/hose.jpg",
+                    description: "Now, that was confusing, wasn't it? The person with aphasia may perceive some parts of the word correctly, but not others. In this example, instead of NOSE, they may perceive what was written as NE$E."
+                },
+                {
+                    text: "hammer",
+                    correct_image_url: "../static/assets/images/screwdriver.jpg",
+                    wrong_image_url: "../static/assets/images/saw.jpg",
+                    description: "Sometimes, the person with aphasia may think of a word related to the one that is seen. In this example, instead of SCREWDRIVER, they may perceive what was written as HAMMER."
+                },
+                {
+                    text: "ook",
+                    correct_image_url: "../static/assets/images/book.jpg",
+                    wrong_image_url: "../static/assets/images/hook.jpg",
+                    description: "Sometimes, some important parts of words are perceived but other parts may not be. In this example, instead of BOOK, they may perceive what was written as OOK."
+                },
+                {
+                    text: "cow",
+                    correct_image_url: "../static/assets/images/horse.jpg",
+                    wrong_image_url: "../static/assets/images/cat.jpg",
+                    description: "Sometimes, the person with aphasia may think of a word related to the one that is seen. In this example, instead of HORSE, they may perceive what was written as COW."
+                },
+                {
+                    text: "orange",
+                    correct_image_url: "../static/assets/images/apple.jpg",
+                    wrong_image_url: "../static/assets/images/banana.jpg",
+                    description: "Sometimes, some important parts of words are perceived but other parts may not be. In this example, instead of APPLE, they may perceive what was written as ORANGE."
+                }
+            ]
+        };
+
+        let currentQuestion = 0;
+        let answered = false;
+
+        function loadQuestion() {
+            const question = questionsData.questions[currentQuestion];
+            document.getElementById('questionText').textContent = question.text;
+            document.getElementById('img1').src = question.correct_image_url;
+            document.getElementById('img2').src = question.wrong_image_url;
+            document.getElementById('confirmation1').textContent = '';
+            document.getElementById('confirmation2').textContent = '';
+            document.getElementById('description').classList.add('hidden');
+            document.getElementById('currentQuestion').textContent = currentQuestion + 1;
+            document.getElementById('totalQuestions').textContent = questionsData.questions.length;
+            updateProgressBar();
+            answered = false;
+        }
+
+        function selectAnswer(event) {
+            if (answered) return;
+            const selectedImage = event.target;
+            const question = questionsData.questions[currentQuestion];
+            const isCorrect = selectedImage.src === question.correct_image_url;
+
+            const correctIndex = isCorrect ? 2 : 1;
+            const incorrectIndex = isCorrect ? 1 : 2;
+
+            document.getElementById(`confirmation${correctIndex}`).textContent = '✓ Correct';
+            document.getElementById(`confirmation${correctIndex}`).classList.add('text-green-600');
+            document.getElementById(`confirmation${incorrectIndex}`).textContent = '✗ Incorrect';
+            document.getElementById(`confirmation${incorrectIndex}`).classList.add('text-red-600');
+            document.getElementById('description').textContent = question.description;
+            document.getElementById('description').classList.remove('hidden');
+            answered = true;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion >= questionsData.questions.length) {
+                currentQuestion = 0;
+            }
+            loadQuestion();
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuestion + 1) / questionsData.questions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        document.getElementById('images').addEventListener('click', function(event) {
+            if (event.target.tagName === 'IMG') {
+                selectAnswer(event);
+            }
+        });
+
+        document.getElementById('nextButton').addEventListener('click', nextQuestion);
+
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        loadQuestion();
+    </script>
+</body>
+</html>

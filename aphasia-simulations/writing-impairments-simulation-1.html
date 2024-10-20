@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aphasia Corner: Simulating Writing Impairment - Semantic Confusions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="icon" href=".//images/favicon.ico" type="image/x-icon">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        blue: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+        <h1 class="text-3xl font-bold text-center text-gray-900 mb-8">Aphasia Exercises</h1>
+
+        <nav class="mb-8">
+            <ul class="flex justify-center space-x-4">
+                <li><a href="../index.html" class="text-blue-600 hover:text-blue-800">Introduction</a></li>
+                <li><a href="listening-impairments.html" class="text-blue-600 hover:text-blue-800">Listening</a></li>
+                <li><a href="reading-impairments.html" class="text-blue-600 hover:text-blue-800">Reading</a></li>
+                <li><a href="writing-impairments.html" class="text-blue-600 hover:text-blue-800 font-bold">Writing</a></li>
+                <li><a href="speaking-impairments.html" class="text-blue-600 hover:text-blue-800">Speaking</a></li>
+            </ul>
+        </nav>
+
+        <nav class="mb-12">
+            <ul class="flex justify-center space-x-4">
+                <li><a href="writing-impairments.html" class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300">Overview</a></li>
+                <li><a href="writing-impairments-simulation-1.html" class="px-3 py-2 bg-blue-600 rounded-full text-white">Exercise 1</a></li>
+                <li><a href="writing-impairments-simulation-2.html" class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300">Exercise 2</a></li>
+                <li><a href="writing-impairments-simulation-3.html" class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300">Exercise 3</a></li>
+                <li><a href="writing-impairments-communication-tips.html" class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300">Communication Tips</a></li>
+            </ul>
+        </nav>
+
+        <h2 class="text-2xl font-semibold text-center text-gray-900 mb-8">Simulating Semantic Confusions</h2>
+
+        <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+                Identify the object in the image below:
+            </h3>
+
+            <div class="mb-6 text-center">
+                <img id="image" src="" alt="Object to identify" class="mx-auto max-w-full h-auto rounded-lg shadow-md">
+            </div>
+
+            <div class="mb-6">
+                <input
+                    type="text"
+                    id="sim-input"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Type your answer here"
+                >
+            </div>
+
+            <div id="feedback" class="mb-4 text-center font-bold"></div>
+
+            <div class="flex justify-between items-center mb-6">
+                <button id="submit-btn" class="flex items-center justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Submit Answer
+                </button>
+                <span class="text-sm text-gray-600">
+                    Question <span id="sim-current-count">1</span> of <span id="sim-total-count">5</span>
+                </span>
+            </div>
+
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+                <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 20%"></div>
+            </div>
+
+            <div id="progress-text" class="text-center text-sm text-gray-600 mb-6">Progress: 20%</div>
+
+            <div class="mt-8 bg-blue-50 border-l-4 border-blue-400 p-4 rounded-md">
+                <h4 class="text-lg font-medium text-gray-900 mb-2">What's happening here?</h4>
+                <p class="text-sm text-blue-700">
+                    <i data-lucide="info" class="inline-block mr-2"></i>
+                    This exercise simulates a writing impairment known as semantic confusion. In this scenario, a word from the same category might be used instead of the intended word. For example, saying "cat" when you mean "dog".
+                </p>
+            </div>
+        </div>
+
+        <div class="flex justify-end">
+            <a href="/aphasia-simulations/writing-impairments-simulation-2.html" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Next Page
+                <i data-lucide="chevron-right" class="ml-2 -mr-1 h-5 w-5" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        lucide.createIcons();
+
+        $(document).ready(function () {
+            var CURRENT_QUESTION = 1;
+
+            var questionsData = {
+                questions: [
+                    { image_url: "../static/assets/images/dog.jpg", confused_word: "cat" },
+                    { image_url: "../static/assets/images/cup.jpg", confused_word: "pot" },
+                    { image_url: "../static/assets/images/comb.jpg", confused_word: "hair" },
+                    { image_url: "../static/assets/images/shoe.jpg", confused_word: "foot" },
+                    { image_url: "../static/assets/images/table.jpg", confused_word: "chair" },
+                ],
+            };
+
+            var NEXT_URL = "writing-impairments-simulation-2.html";
+
+            function loadQuestion(index) {
+                var question = questionsData.questions[index - 1];
+                $("#image").attr("src", question.image_url);
+                $("#sim-input").val('').focus();
+                $("#feedback").text('').removeClass('text-green-500 text-red-500');
+                $("#sim-current-count").text(index);
+                $("#sim-total-count").text(questionsData.questions.length);
+                updateProgress(index);
+            }
+
+            function checkAnswer() {
+                var question = questionsData.questions[CURRENT_QUESTION - 1];
+                var userAnswer = $("#sim-input").val().trim().toLowerCase();
+                if (userAnswer === question.confused_word.toLowerCase()) {
+                    $("#feedback").text("Correct! This simulates the semantic confusion in writing impairments.").addClass('text-green-500').removeClass('text-red-500');
+                } else {
+                    $("#feedback").text("Not quite. In this simulation, '" + question.confused_word + "' would be the expected confusion. Try again!").addClass('text-red-500').removeClass('text-green-500');
+                }
+            }
+
+            function updateProgress(index) {
+                var progress = (index / questionsData.questions.length) * 100;
+                $("#progress-bar").css('width', progress + '%');
+                $("#progress-text").text('Progress: ' + Math.round(progress) + '%');
+            }
+
+            loadQuestion(CURRENT_QUESTION);
+
+            $("#submit-btn").click(function () {
+                if ($("#sim-input").val().trim() === '') {
+                    $("#feedback").text("Please enter an answer before submitting.").addClass('text-red-500').removeClass('text-green-500');
+                    return;
+                }
+                
+                checkAnswer();
+                if (CURRENT_QUESTION < questionsData.questions.length) {
+                    CURRENT_QUESTION++;
+                    setTimeout(function () {
+                        loadQuestion(CURRENT_QUESTION);
+                    }, 2000);
+                } else {
+                    setTimeout(function () {
+                        window.location.href = NEXT_URL;
+                    }, 2000);
+                }
+            });
+
+            $("#sim-input").on('keypress', function(e) {
+                if (e.which == 13) {
+                    $("#submit-btn").click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

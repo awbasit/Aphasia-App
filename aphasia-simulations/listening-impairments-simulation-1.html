@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href=".//images/favicon.ico" type="image/x-icon">
+    <title>Aphasia Corner: Listening Impairments - Simulating Phonological and Semantic Errors</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        .play-button {
+            background-color: #0d6efd;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .play-button:hover {
+            background-color: #0b5ed7;
+        }
+
+        #answers ul {
+            padding-left: 0;
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        #answers li {
+            width: 165px;
+            height: 130px;
+            border: 2px solid #ddd;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        #answers img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .confirmation {
+            margin-top: 0.5rem;
+            font-weight: bold;
+            color: green;
+        }
+
+        .incorrect {
+            color: red;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .console-small {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .console-button {
+            background-color: #0d6efd;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        .console-button:hover {
+            background-color: #0b5ed7;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+        <h1 class="text-3xl font-bold text-center text-gray-900 mb-8">Aphasia Exercises</h1>
+
+        <nav class="mb-4">
+            <ul class="flex justify-center space-x-4">
+                <li><a class="text-blue-600 hover:text-blue-800" href="../index.html">Introduction</a></li>
+                <li><a class="text-blue-600 hover:text-blue-800 font-bold" href="listening-impairments.html">Listening</a></li>
+                <li><a class="text-blue-600 hover:text-blue-800" href="reading-impairments.html">Reading</a></li>
+                <li><a class="text-blue-600 hover:text-blue-800" href="writing-impairments.html">Writing</a></li>
+                <li><a class="text-blue-600 hover:text-blue-800" href="speaking-impairments.html">Speaking</a></li>
+            </ul>
+        </nav>
+
+        <nav class="mb-12">
+            <ul class="flex justify-center space-x-4">
+                <li><a class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300" href="listening-impairments.html">Overview</a></li>
+                <li><a class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300 active" href="listening-impairments-simulation-1.html">Exercise 1</a></li>
+                <li><a class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300" href="listening-impairments-simulation-2.html">Exercise 2</a></li>
+                <li><a class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300" href="listening-impairments-simulation-3.html">Exercise 3</a></li>
+                <li><a class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300" href="listening-impairments-communication-tips.html">Communication Tips</a></li>
+            </ul>
+        </nav>
+
+        <section id="simulation" class="text-center">
+            <h2 class="text-xl font-semibold mb-4">Simulating Phonological and Semantic Errors</h2>
+            <p class="mb-6">Click play to hear the question and then choose the appropriate answer.</p>
+
+            <div id="task" class="mb-4">
+                <div class="play-button" id="play-button">
+                    <i data-lucide="play" class="mr-2"></i> PLAY
+                </div>
+            </div>
+
+            <div id="answers" class="mb-4">
+                <ul class="flex justify-center" id="answer-list">
+                    <!-- Images will be populated here dynamically -->
+                </ul>
+            </div>
+
+            <div class="console-small">
+                <div class="console-button next" id="next-button">
+                    <span>Next Question</span>
+                </div>
+                <div>
+                    <span id="sim-current-count">1</span> of <span id="sim-total-count">5</span>
+                </div>
+            </div>
+
+            <div id="quick-desc" class="mt-4"></div>
+        </section>
+    </div>
+
+    <div style="display: none; visibility: hidden">
+        <div id="player"></div>
+    </div>
+
+    <!-- Modal -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Correct Answer</h2>
+            <p id="modalMessage"></p>
+            <div id="contextualMessage"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.1/mdb.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../static/js/jwplayer/jwplayer.js"></script>
+
+    <script type="text/javascript">
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        const questionsData = [
+            {
+                audio_url: "../static/assets/audio/listening-sim-1-q1.mp3",
+                correct_image_url: "../static/assets/images/nose.jpg",
+                wrong_image_url: "../static/assets/images/hose.jpg",
+                contextual_message: "<p>Now, that was confusing wasn't it... Sometimes the person with aphasia may hear the sounds but may perceive them in the wrong order.</p><p>In this example, instead of NOSE, they may perceive what was said as SNOW.</p><p>Click on Next Question below to try a few more examples.</p>"
+            },
+            {
+                audio_url: "../static/assets/audio/listening-sim-1-q2.mp3",
+                correct_image_url: "../static/assets/images/book.jpg",
+                wrong_image_url: "../static/assets/images/hook.jpg",
+                contextual_message: "<p>Sometimes, a person with aphasia may hear the sounds but perceive them in the wrong order.</p><p>In this example, instead of BOOK, they may perceive what was said as KOOB.</p>"
+            },
+            {
+                audio_url: "../static/assets/audio/listening-sim-1-q3.mp3",
+                correct_image_url: "../static/assets/images/horse.jpg",
+                wrong_image_url: "../static/assets/images/cat.jpg",
+                contextual_message: "<p>Sometimes, a person with aphasia may think of a word related to the one that is said.</p><p>For example, they may think they heard COW even though HORSE was said.</p>"
+            },
+            {
+                audio_url: "../static/assets/audio/listening-sim-1-q4.mp3",
+                correct_image_url: "../static/assets/images/apple.jpg",
+                wrong_image_url: "../static/assets/images/banana.jpg",
+                contextual_message: "<p>Sometimes, a person with aphasia may think of a word related to the one that is said.</p><p>For example, they may think they heard ORANGE even though APPLE was said.</p>"
+            },
+            {
+                audio_url: "../static/assets/audio/listening-sim-1-q5.mp3",
+                correct_image_url: "../static/assets/images/screwdriver.jpg",
+                wrong_image_url: "../static/assets/images/saw.jpg",
+                contextual_message: "<p>Sometimes, a person with aphasia may think of a word related to the one that is said.</p><p>For example, they may think they heard HAMMER even though SCREWDRIVER was said.</p>"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        function loadQuestion() {
+            const question = questionsData[currentQuestionIndex];
+            jwplayer("player").setup({
+                flashplayer: "../static/js/jwplayer/player.swf",
+                width: 0,
+                height: 0,
+                file: question.audio_url,
+                events: {
+                    onReady: function () {
+                        console.log("JWPlayer is ready");
+                    },
+                    onComplete: function () {
+                        $("#play-button").removeClass("pause");
+                    },
+                },
+            });
+
+            // Populate images
+            const answerList = $("#answer-list");
+            answerList.empty();
+            answerList.append(`
+                <li data-correct="true">
+                    <a href="#"><img src="${question.correct_image_url}" alt="Correct Answer" /></a>
+                    <div class="confirmation"></div>
+                </li>
+                <li data-correct="false">
+                    <a href="#"><img src="${question.wrong_image_url}" alt="Wrong Answer" /></a>
+                    <div class="confirmation"></div>
+                </li>
+            `);
+
+            // Update question count
+            $("#sim-current-count").text(currentQuestionIndex + 1);
+            $("#sim-total-count").text(questionsData.length);
+        }
+
+        $(document).ready(function () {
+            loadQuestion(); // Load the first question
+
+            $("#play-button").on("click", function () {
+                jwplayer("player").play();
+                $(this).addClass("pause");
+            });
+
+            // Handle image clicks
+            $(document).on("click", "#answers li", function () {
+                const isCorrect = $(this).data("correct");
+                const question = questionsData[currentQuestionIndex];
+
+                if (isCorrect) {
+                    $(this).find(".confirmation").text("Correct!").removeClass("incorrect").addClass("confirmation");
+                } else {
+                    $(this).find(".confirmation").text("Incorrect!").addClass("incorrect");
+                }
+
+                // Show modal with the correct answer and contextual message
+                $("#modalMessage").text(`The correct answer is "${question.correct_image_url.split('/').pop().split('.')[0].toUpperCase()}".`);
+                $("#contextualMessage").html(question.contextual_message);
+                $("#resultModal").fadeIn();
+            });
+
+            // Handle next question button
+            $("#next-button").on("click", function () {
+                currentQuestionIndex++;
+                if (currentQuestionIndex >= questionsData.length) {
+                    currentQuestionIndex = 0; // Reset to first question if at the end
+                }
+                loadQuestion(); // Load new question
+                $("#resultModal").fadeOut(); // Hide the modal when moving to the next question
+            });
+
+            // Close modal
+            $("#closeModal").on("click", function () {
+                $("#resultModal").fadeOut();
+            });
+
+            // Close modal when clicking outside of it
+            $(window).on("click", function(event) {
+                if ($(event.target).is("#resultModal")) {
+                    $("#resultModal").fadeOut();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

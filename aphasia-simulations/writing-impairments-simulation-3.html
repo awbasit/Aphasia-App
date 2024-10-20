@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aphasia Corner: Simulating Writing Grammatical Impairments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href=".//images/favicon.ico" type="image/x-icon">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        blue: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+        <h1 class="text-3xl font-bold text-center text-gray-900 mb-8">Aphasia Exercises</h1>
+
+        <nav class="mb-8">
+            <ul class="flex justify-center space-x-4">
+                <li><a href="../index.html" class="text-blue-600 hover:text-blue-800">Introduction</a></li>
+                <li><a href="listening-impairments.html" class="text-blue-600 hover:text-blue-800">Listening</a></li>
+                <li><a href="reading-impairments.html" class="text-blue-600 hover:text-blue-800">Reading</a></li>
+                <li><a href="writing-impairments.html" class="text-blue-600 hover:text-blue-800 font-bold">Writing</a></li>
+                <li><a href="speaking-impairments.html" class="text-blue-600 hover:text-blue-800">Speaking</a></li>
+            </ul>
+        </nav>
+
+        <nav class="mb-12">
+            <ul class="flex justify-center space-x-4">
+                <li><a href="writing-impairments.html" class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300">Overview</a></li>
+                <li><a href="writing-impairments-simulation-1.html" class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300">Exercise 1</a></li>
+                <li><a href="writing-impairments-simulation-2.html" class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300">Exercise 2</a></li>
+                <li><a href="writing-impairments-simulation-3.html" class="px-3 py-2 bg-blue-600 rounded-full text-white">Exercise 3</a></li>
+                <li><a href="writing-impairments-communication-tips.html" class="px-3 py-2 bg-gray-200 rounded-full text-gray-700 hover:bg-gray-300">Communication Tips</a></li>
+            </ul>
+        </nav>
+
+        <h2 class="text-2xl font-semibold text-center text-gray-900 mb-8">Simulating Grammatical Impairments</h2>
+
+        <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+                Type a short, simple sentence that describes the picture.
+            </h3>
+
+            <div class="mb-6 text-center">
+                <img id="image" src="" alt="Scene to describe" class="mx-auto max-w-full h-auto rounded-lg shadow-md">
+            </div>
+
+            <div class="mb-6">
+                <div id="typed-text" class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50 min-h-[40px] mb-2"></div>
+                <input
+                    type="text"
+                    id="sim-input-long"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Type your sentence here"
+                >
+            </div>
+
+            <div class="flex justify-between items-center mb-6">
+                <button id="submit-btn" class="flex items-center justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Submit Answer
+                </button>
+                <span class="text-sm text-gray-600">
+                    Question <span id="sim-current-count">1</span> of <span id="sim-total-count">5</span>
+                </span>
+            </div>
+
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+                <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 20%"></div>
+            </div>
+
+            <div class="mt-8 bg-blue-50 border-l-4 border-blue-400 p-4 rounded-md">
+                <p class="text-sm text-blue-700">
+                    <i data-lucide="info" class="inline-block mr-2"></i>
+                    In these examples, a person with aphasia may recognize the elements in the picture but struggle to construct a grammatically complete sentence. This simulation helps demonstrate how grammatical forms might be omitted or simplified in their expression.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex justify-end">
+            <a href="/aphasia-simulations/speaking-impairments.html" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Next Page
+                <i data-lucide="chevron-right" class="ml-2 -mr-1 h-5 w-5" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        lucide.createIcons();
+
+        $(document).ready(function() {
+            var CURRENT_QUESTION = 1;
+            var TOTAL_QUESTIONS = 5;
+
+            var questionsData = {
+                questions: [
+                    { image_url: "../static/assets/images/dog_chasing_cat.jpg" },
+                    { image_url: "../static/assets/images/girl_throwing_ball.jpg" },
+                    { image_url: "../static/assets/images/book_on_table.jpg" },
+                    { image_url: "../static/assets/images/boy_eating_apple.jpg" },
+                    { image_url: "../static/assets/images/cat_under_chair.jpg" },
+                ]
+            };
+
+            function loadQuestion(index) {
+                var question = questionsData.questions[index - 1];
+                $("#image").attr("src", question.image_url);
+                $("#sim-input-long").val('');
+                $("#typed-text").text('');
+                $("#sim-current-count").text(index);
+                updateProgress(index);
+            }
+
+            function updateProgress(index) {
+                var progress = (index / TOTAL_QUESTIONS) * 100;
+                $("#progress-bar").css("width", progress + "%");
+            }
+
+            function simulateGrammaticalImpairment(sentence) {
+                var words = sentence.split(' ');
+                var result = words.filter((word, index) => {
+                    if (['a', 'an', 'the', 'in', 'on', 'at'].includes(word.toLowerCase())) {
+                        return false;
+                    }
+                    return index % 2 === 0;
+                }).join(' ');
+                return result.charAt(0).toUpperCase() + result.slice(1);
+            }
+
+            $("#submit-btn").click(function() {
+                var userInput = $("#sim-input-long").val().trim();
+                if (userInput) {
+                    var impaired = simulateGrammaticalImpairment(userInput);
+                    $("#typed-text").text(impaired);
+                    
+                    if (CURRENT_QUESTION < TOTAL_QUESTIONS) {
+                        CURRENT_QUESTION++;
+                        setTimeout(loadQuestion, 2000, CURRENT_QUESTION);
+                    } else {
+                        alert("Exercise completed! Great job!");
+                    }
+                } else {
+                    alert("Please type a sentence before submitting.");
+                }
+            });
+
+            $("#sim-input-long").keypress(function(e) {
+                if (e.which == 13) {
+                    $("#submit-btn").click();
+                }
+            });
+
+            loadQuestion(CURRENT_QUESTION);
+        });
+    </script>
+</body>
+</html>

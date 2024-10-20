@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aphasia Corner: Simulating Speaking Impairments - Phonological Errors</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#f59e0b',
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <nav>
+                <ul class="flex justify-center space-x-4">
+                    <li><a href="speaking-impairments.html" class="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-150 ease-in-out">Overview</a></li>
+                    <li><a href="speaking-impairments-simulation-1.html" class="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-150 ease-in-out">Exercise 1</a></li>
+                    <li><a href="speaking-impairments-simulation-2.html" class="px-4 py-2 rounded-full bg-secondary text-white font-medium">Exercise 2</a></li>
+                    <li><a href="speaking-impairments-communication-tips.html" class="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-150 ease-in-out">Communication Tips</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="p-6">
+                <h2 class="text-3xl font-semibold mb-6 text-primary">Simulating Phonological Errors</h2>
+                <div class="mb-6">
+                    <h3 class="text-xl font-medium mb-4 text-gray-700">Click on the picture to hear how a person with aphasia might describe it.</h3>
+                    <div id="image-container" class="flex justify-center mb-4">
+                        <img id="image" src="/placeholder.svg?height=256&width=256" alt="Object to describe" class="w-64 h-64 object-cover rounded-lg shadow-md cursor-pointer transition-transform duration-300 hover:scale-105">
+                    </div>
+                    <div id="audio-player" class="hidden">
+                        <audio id="audio" src=""></audio>
+                        <button id="play-pause" class="bg-secondary text-white px-4 py-2 rounded-full hover:bg-orange-600 transition duration-150 ease-in-out flex items-center justify-center mx-auto">
+                            <i data-lucide="play" class="mr-2"></i>
+                            <span>Play</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <button id="next-button" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-colors duration-300 flex items-center">
+                        Next Question
+                        <i data-lucide="chevron-right" class="ml-2"></i>
+                    </button>
+                    <span class="text-gray-600">
+                        Question <span id="current-question" class="font-semibold">1</span> of <span id="total-questions" class="font-semibold">4</span>
+                    </span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+                    <div id="progress-bar" class="bg-primary h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 25%"></div>
+                </div>
+                <div id="quick-desc" class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md">
+                    <p class="text-sm text-blue-700">
+                        A person with aphasia might know what an object is, but the sounds of the word they want to say come out incorrectly.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        lucide.createIcons();
+
+        const questionsData = {
+            questions: [
+                {
+                    audio_url: "/static/assets/audio/lillow.mp3",
+                    image_url: "../static/assets/images/pillow.jpg",
+                    alt: "Pillow"
+                },
+                {
+                    audio_url: "/static/assets/audio/toother.mp3",
+                    image_url: "../static/assets/images/toothbrush.jpg",
+                    alt: "Toothbrush"
+                },
+                {
+                    audio_url: "/static/assets/audio/bow.mp3",
+                    image_url: "../static/assets/images/bell.jpg",
+                    alt: "Bell"
+                },
+                {
+                    audio_url: "/static/assets/audio/pippa.mp3",
+                    image_url: "../static/assets/images/zipper.jpg",
+                    alt: "Zipper"
+                },
+            ],
+        };
+
+        let currentQuestion = 0;
+        const totalQuestions = questionsData.questions.length;
+
+        const image = document.getElementById('image');
+        const audio = document.getElementById('audio');
+        const playPauseBtn = document.getElementById('play-pause');
+        const nextButton = document.getElementById('next-button');
+        const currentQuestionSpan = document.getElementById('current-question');
+        const totalQuestionsSpan = document.getElementById('total-questions');
+        const progressBar = document.getElementById('progress-bar');
+        const audioPlayer = document.getElementById('audio-player');
+
+        function loadQuestion() {
+            const question = questionsData.questions[currentQuestion];
+            image.src = question.image_url;
+            image.alt = question.alt;
+            audio.src = question.audio_url;
+            currentQuestionSpan.textContent = currentQuestion + 1;
+            totalQuestionsSpan.textContent = totalQuestions;
+            updateProgress();
+            audioPlayer.classList.add('hidden');
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        image.addEventListener('click', () => {
+            audioPlayer.classList.remove('hidden');
+        });
+
+        playPauseBtn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                playPauseBtn.innerHTML = '<i data-lucide="pause" class="mr-2"></i><span>Pause</span>';
+            } else {
+                audio.pause();
+                playPauseBtn.innerHTML = '<i data-lucide="play" class="mr-2"></i><span>Play</span>';
+            }
+            lucide.createIcons();
+        });
+
+        audio.addEventListener('ended', () => {
+            playPauseBtn.innerHTML = '<i data-lucide="play" class="mr-2"></i><span>Play</span>';
+            lucide.createIcons();
+        });
+
+        nextButton.addEventListener('click', () => {
+            currentQuestion = (currentQuestion + 1) % totalQuestions;
+            loadQuestion();
+        });
+
+        loadQuestion();
+    </script>
+</body>
+</html>
